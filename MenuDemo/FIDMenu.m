@@ -20,6 +20,8 @@
 @property (nonatomic,strong)UIViewController *leftMenuViewController;
 @property (nonatomic,assign)CGFloat contentViewWidth;
 @property (nonatomic,assign)CGFloat leftMenuWidth;
+/** 阻挡点击事件的View **/
+@property (nonatomic,strong)UIView *obstructView;
 
 @end
 
@@ -43,7 +45,9 @@
 
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panMove:)];
     [self.contentViewController.view addGestureRecognizer:pan];
-  
+    self.obstructView = [[UIView alloc]initWithFrame:self.contentViewController.view.bounds];
+    self.obstructView.hidden = YES;
+    [self.contentViewController.view addSubview:self.obstructView];
 }
 
 - (void)panMove:(UIPanGestureRecognizer *)recognizer{
@@ -87,6 +91,7 @@
     }
 
 }
+#pragma mark - --------------Move right----------------
 - (void)transformChanged{
 
      CGRect windowFrame = [[UIScreen mainScreen]bounds];
@@ -97,13 +102,16 @@
     }];
     UITapGestureRecognizer *tapSwipe = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapSwipe:)];
     [self.contentViewController.view addGestureRecognizer:tapSwipe];
+    self.obstructView.hidden = NO;
 }
+#pragma mark - --------------Move left----------------
 - (void)transformRecover{
     [UIView animateWithDuration:animationDuration animations:^{
         self.offsetX = 0;
         self.contentScale = 1;
         self.contentViewController.view.transform = CGAffineTransformIdentity;
     }];
+    self.obstructView.hidden = YES;
 }
 - (void)tapSwipe:(UITapGestureRecognizer *)tapSwipe{
 
